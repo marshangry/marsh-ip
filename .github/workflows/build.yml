@@ -130,6 +130,14 @@ jobs:
           </script></body></html>
           EOF
 
+      # Pin the build to Java 17; Gradle 8.9 / Android Gradle Plugin 8.7.3
+      # cannot run with the Java 25 runtime that caused the previous failure.
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
       - name: Build APK
         uses: gradle/gradle-build-action@v3
         with:
