@@ -15,6 +15,7 @@ jobs:
         run: |
           mkdir -p android/app/src/main/java/com/marship
           mkdir -p android/app/src/main/res/values
+          mkdir -p android/app/src/main/res/drawable
           mkdir -p android/app/src/main/assets
 
           cat > android/settings.gradle <<'EOF'
@@ -53,7 +54,7 @@ jobs:
           cat > android/app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <uses-permission android:name="android.permission.INTERNET" />
-              <application android:theme="@style/AppTheme" android:label="Marsh IP" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
+              <application android:theme="@style/AppTheme" android:label="Marsh IP" android:icon="@drawable/ic_launcher" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
                   <activity android:name=".MainActivity" android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
@@ -62,6 +63,16 @@ jobs:
                   </activity>
               </application>
           </manifest>
+          EOF
+
+
+          cat > android/app/src/main/res/drawable/ic_launcher.xml <<'EOF'
+          <vector xmlns:android="http://schemas.android.com/apk/res/android"
+              android:width="108dp" android:height="108dp"
+              android:viewportWidth="108" android:viewportHeight="108">
+              <path android:fillColor="#090D18" android:pathData="M0,0h108v108h-108z"/>
+              <path android:fillColor="#55D6E8" android:pathData="M22,78V30h10l22,29 22,-29h10v48h-12V49L54,72 34,49v29z"/>
+          </vector>
           EOF
 
           cat > android/app/src/main/res/values/styles.xml <<'EOF'
@@ -121,12 +132,51 @@ jobs:
           <div class="actions"><button class="primary" id="refresh">Refresh location</button><button id="map" disabled>Open map</button></div><p id="status">Connecting to location service…</p></section>
           <p class="note">IP-based location is approximate, not an exact GPS or home address. Data provided by <a href="https://ipapi.co/" target="_blank">ipapi.co</a>.</p>
           </main><script>
-          const $=id=>document.getElementById(id);let coords=null;const show=(id,v)=>$(id).textContent=v||"Unavailable";
-          async function load(){ $("status").textContent="Getting your public IP and approximate location…";$("refresh").disabled=true;$("map").disabled=true;
-          try{const r=await fetch("https://ipapi.co/json/",{cache:"no-store"});if(!r.ok)throw Error();const d=await r.json();if(d.error)throw Error();show("ip",d.ip);show("city",d.city);show("country",d.country_name);show("region",d.region);
-          if(Number.isFinite(d.latitude)&&Number.isFinite(d.longitude)){coords=[d.latitude,d.longitude];show("coords",`${d.latitude.toFixed(5)}, ${d.longitude.toFixed(5)}`);$("map").disabled=false;}else{coords=null;show("coords","Unavailable");}
-          $("status").textContent="Location updated.";}catch(e){$("status").textContent="Could not load location. Check internet and try again.";if($("ip").textContent==="Loading…")$("ip").textContent="Unavailable";}finally{$("refresh").disabled=false;}}
-          $("refresh").onclick=load;$("copyIp").onclick=async()=>{try{await navigator.clipboard.writeText($("ip").textContent);$("status").textContent="IP address copied.";}catch(e){$("status").textContent="Copy unavailable.";}};$("map").onclick=()=>{if(coords)window.open(`https://www.openstreetmap.org/?mlat=${coords[0]}&mlon=${coords[1]}#map=12/${coords[0]}/${coords[1]}`);};load();
+          const $=id=>document.getElementById(id);
+          let coords=null;
+          const show=(id,v)=>$(id).textContent=(v===null||v===undefined||v==="")?"Unavailable":v;
+          async function getJson(url){
+            const controller=new AbortController();
+            const timer=setTimeout(()=>controller.abort(),9000);
+            try{
+              const response=await fetch(url,{cache:"no-store",signal:controller.signal});
+              if(!response.ok) throw new Error("HTTP "+response.status);
+              return await response.json();
+            } finally { clearTimeout(timer); }
+          }
+          async function load(){
+            $("status").textContent="Trying location services…";
+            $("refresh").disabled=true; $("map").disabled=true; coords=null;
+            let data=null, provider="";
+            const providers=[
+              async()=>{const d=await getJson("https://ipwho.is/");if(!d.success)throw Error(d.message||"ipwho.is failed");return {ip:d.ip,city:d.city,country:d.country,region:d.region,lat:d.latitude,lon:d.longitude};},
+              async()=>{const d=await getJson("https://ipapi.co/json/");if(d.error||!d.ip)throw Error("ipapi.co failed");return {ip:d.ip,city:d.city,country:d.country_name,region:d.region,lat:d.latitude,lon:d.longitude};},
+              async()=>{const d=await getJson("https://ipinfo.io/json");if(!d.ip)throw Error("ipinfo failed");const p=(d.loc||"").split(",");return {ip:d.ip,city:d.city,country:d.country,region:d.region,lat:Number(p[0]),lon:Number(p[1])};}
+            ];
+            for(let n=0;n<providers.length;n++){
+              try{data=await providers[n]();provider=["ipwho.is","ipapi.co","ipinfo.io"][n];break;}
+              catch(e){console.warn("Location provider failed",n,e);}
+            }
+            if(!data){
+              try{const d=await getJson("https://api.ipify.org?format=json");if(d.ip)data={ip:d.ip};}
+              catch(e){console.warn("IP fallback failed",e);}
+            }
+            if(data && data.ip){
+              show("ip",data.ip);show("city",data.city);show("country",data.country);show("region",data.region);
+              if(Number.isFinite(data.lat)&&Number.isFinite(data.lon)){
+                coords=[data.lat,data.lon];show("coords",`${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}`);$("map").disabled=false;
+              }else show("coords","Unavailable");
+              $("status").textContent=provider?`Location loaded using ${provider}.`:"IP detected; location details are temporarily unavailable.";
+            }else{
+              show("ip","Unavailable");show("city","Unavailable");show("country","Unavailable");show("region","Unavailable");show("coords","Unavailable");
+              $("status").textContent="Could not reach IP services. Try turning off VPN or changing network, then refresh.";
+            }
+            $("refresh").disabled=false;
+          }
+          $("refresh").onclick=load;
+          $("copyIp").onclick=async()=>{try{await navigator.clipboard.writeText($("ip").textContent);$("status").textContent="IP address copied.";}catch(e){$("status").textContent="Copy is unavailable in this browser.";}};
+          $("map").onclick=()=>{if(coords)window.open(`https://www.openstreetmap.org/?mlat=${coords[0]}&mlon=${coords[1]}#map=12/${coords[0]}/${coords[1]}`,"_blank");};
+          load();
           </script></body></html>
           EOF
 
