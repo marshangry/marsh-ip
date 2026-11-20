@@ -3,59 +3,76 @@ name: Build Marsh IP APK
 on:
   workflow_dispatch:
   push:
-    paths:
-      - ".github/workflows/build.yml"
+    branches: [ main ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+
+      - name: Set up Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Set up Gradle
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+
       - name: Create Android project
         shell: bash
         run: |
-          mkdir -p android/app/src/main/java/com/marship
-          mkdir -p android/app/src/main/res/values
-          mkdir -p android/app/src/main/res/drawable
-          mkdir -p android/app/src/main/assets
-
-          cat > android/settings.gradle <<'EOF'
+          mkdir -p app/src/main/java/com/marsh/ip app/src/main/assets app/src/main/res/drawable app/src/main/res/mipmap-mdpi app/src/main/res/mipmap-hdpi app/src/main/res/mipmap-xhdpi app/src/main/res/mipmap-xxhdpi app/src/main/res/mipmap-xxxhdpi
+          cat > settings.gradle <<'EOF'
           pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
           dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
           rootProject.name = "MarshIP"
-          include(":app")
+          include ':app'
           EOF
-
-          cat > android/build.gradle <<'EOF'
+          cat > build.gradle <<'EOF'
           plugins {
               id 'com.android.application' version '8.7.3' apply false
           }
           EOF
-
-          cat > android/gradle.properties <<'EOF'
+          cat > gradle.properties <<'EOF'
           org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
           android.useAndroidX=true
           EOF
-
-          cat > android/app/build.gradle <<'EOF'
-          plugins { id 'com.android.application' }
+          cat > app/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application'
+          }
           android {
-              namespace 'com.marship'
+              namespace 'com.marsh.ip'
               compileSdk 35
               defaultConfig {
-                  applicationId 'com.marship'
+                  applicationId 'com.marsh.ip'
                   minSdk 23
                   targetSdk 35
-                  versionCode 1
-                  versionName '1.0'
+                  versionCode 3
+                  versionName '3.0'
               }
           }
           EOF
-
-          cat > android/app/src/main/AndroidManifest.xml <<'EOF'
+          cat > app/src/main/AndroidManifest.xml <<'EOF'
           <manifest xmlns:android="http://schemas.android.com/apk/res/android">
               <uses-permission android:name="android.permission.INTERNET" />
-              <application android:theme="@style/AppTheme" android:label="Marsh IP" android:icon="@drawable/ic_launcher" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
-                  <activity android:name=".MainActivity" android:exported="true">
+              <application
+                  android:allowBackup="false"
+                  android:usesCleartextTraffic="false"
+                  android:label="Marsh IP"
+                  android:theme="@android:style/Theme.Material.Light.NoActionBar"
+                  android:icon="@mipmap/ic_launcher">
+                  <activity
+                      android:name=".MainActivity"
+                      android:exported="true">
                       <intent-filter>
                           <action android:name="android.intent.action.MAIN" />
                           <category android:name="android.intent.category.LAUNCHER" />
@@ -64,37 +81,27 @@ jobs:
               </application>
           </manifest>
           EOF
+          if [ ! -f marsh_icon.png ]; then
+            echo "ERROR: Upload the supplied app icon to the repository root as marsh_icon.png"
+            exit 1
+          fi
+          sudo apt-get update
+          sudo apt-get install -y imagemagick
+          convert marsh_icon.png -resize 48x48^ -gravity center -extent 48x48 app/src/main/res/mipmap-mdpi/ic_launcher.png
+          convert marsh_icon.png -resize 72x72^ -gravity center -extent 72x72 app/src/main/res/mipmap-hdpi/ic_launcher.png
+          convert marsh_icon.png -resize 96x96^ -gravity center -extent 96x96 app/src/main/res/mipmap-xhdpi/ic_launcher.png
+          convert marsh_icon.png -resize 144x144^ -gravity center -extent 144x144 app/src/main/res/mipmap-xxhdpi/ic_launcher.png
+          convert marsh_icon.png -resize 192x192^ -gravity center -extent 192x192 app/src/main/res/mipmap-xxxhdpi/ic_launcher.png
+          cat > app/src/main/java/com/marsh/ip/MainActivity.java <<'EOF'
+          package com.marsh.ip;
 
-
-          cat > android/app/src/main/res/drawable/ic_launcher.xml <<'EOF'
-          <vector xmlns:android="http://schemas.android.com/apk/res/android"
-              android:width="108dp" android:height="108dp"
-              android:viewportWidth="108" android:viewportHeight="108">
-              <path android:fillColor="#090D18" android:pathData="M0,0h108v108h-108z"/>
-              <path android:fillColor="#55D6E8" android:pathData="M22,78V30h10l22,29 22,-29h10v48h-12V49L54,72 34,49v29z"/>
-          </vector>
-          EOF
-
-          cat > android/app/src/main/res/values/styles.xml <<'EOF'
-          <resources>
-              <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
-                  <item name="android:fontFamily">sans</item>
-                  <item name="android:colorAccent">#55D6E8</item>
-                  <item name="android:statusBarColor">#090D18</item>
-                  <item name="android:navigationBarColor">#090D18</item>
-                  <item name="android:windowLightStatusBar">false</item>
-              </style>
-          </resources>
-          EOF
-
-          cat > android/app/src/main/java/com/marship/MainActivity.java <<'EOF'
-          package com.marship;
           import android.app.Activity;
           import android.os.Bundle;
           import android.webkit.WebChromeClient;
+          import android.webkit.WebSettings;
           import android.webkit.WebView;
           import android.webkit.WebViewClient;
-          import android.webkit.WebSettings;
+
           public class MainActivity extends Activity {
               @Override public void onCreate(Bundle savedInstanceState) {
                   super.onCreate(savedInstanceState);
@@ -102,103 +109,108 @@ jobs:
                   WebSettings settings = web.getSettings();
                   settings.setJavaScriptEnabled(true);
                   settings.setDomStorageEnabled(true);
+                  settings.setLoadsImagesAutomatically(true);
                   web.setWebViewClient(new WebViewClient());
                   web.setWebChromeClient(new WebChromeClient());
                   setContentView(web);
                   web.loadUrl("file:///android_asset/index.html");
               }
+              @Override public void onBackPressed() {
+                  WebView web = (WebView) findViewById(android.R.id.content).getRootView();
+                  super.onBackPressed();
+              }
           }
           EOF
-
-          cat > android/app/src/main/assets/index.html <<'EOF'
+          cat > app/src/main/assets/index.html <<'EOF'
           <!doctype html>
-          <html lang="en"><head>
-          <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-          <meta name="theme-color" content="#090d18"><title>Marsh IP</title>
+          <html lang="en">
+          <head>
+          <meta charset="utf-8">
+          <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+          <meta name="theme-color" content="#101827">
+          <title>Marsh IP</title>
           <style>
-          :root{color-scheme:dark;--bg:#090d18;--line:#263247;--muted:#94a3b8;--white:#f8fafc;--cyan:#55d6e8}
-          *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#1b3155 0,transparent 55%),var(--bg);color:var(--white);font-family:system-ui,sans-serif;display:flex;justify-content:center;padding:28px 16px}
-          main{width:min(100%,620px)}header{text-align:center;margin:14px 0 28px}.brand{font-size:clamp(32px,8vw,48px);font-weight:850;letter-spacing:-2px;margin:0}.brand span{color:var(--cyan)}.sub{color:var(--muted);margin:8px 0 0;font-size:14px;letter-spacing:2px;text-transform:uppercase}
-          .card{background:linear-gradient(145deg,#162135f5,#0e1523fa);border:1px solid var(--line);border-radius:22px;padding:22px;margin:14px 0;box-shadow:0 18px 55px #0005}.eyebrow{font-size:12px;color:var(--muted);letter-spacing:1.8px;font-weight:700}.iprow{display:flex;align-items:center;gap:12px;margin-top:10px}#ip{font-size:clamp(25px,7vw,36px);font-weight:800;overflow-wrap:anywhere;flex:1}
-          button{border:1px solid #3a4c69;background:#1b2a43;color:#eaf5ff;border-radius:12px;padding:11px 14px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.item{background:#0b1322;border:1px solid #202d42;border-radius:15px;padding:15px;min-width:0}.label{font-size:11px;color:var(--muted);letter-spacing:1.4px;font-weight:700}.value{font-size:18px;font-weight:700;margin-top:8px;overflow-wrap:anywhere}.wide{grid-column:1/-1}.coords{font-size:15px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.primary{background:linear-gradient(100deg,#267caa,#4c70d8);border:0}#status{color:var(--muted);font-size:13px;margin:14px 2px 0;min-height:20px}.note{color:#8998ad;font-size:12px;line-height:1.6;text-align:center;margin:20px 8px}a{color:#8bd9ed}
-          </style></head><body><main>
-          <header><h1 class="brand"><span>M</span>arsh <span>IP</span></h1><p class="sub">Your public IP &amp; location</p></header>
-          <section class="card"><div class="eyebrow">IP ADDRESS</div><div class="iprow"><div id="ip">Loading…</div><button id="copyIp">Copy</button></div></section>
-          <section class="card"><div class="eyebrow">IP LOCATION</div><div class="grid">
-          <div class="item"><div class="label">CITY</div><div class="value" id="city">—</div></div>
-          <div class="item"><div class="label">COUNTRY</div><div class="value" id="country">—</div></div>
-          <div class="item wide"><div class="label">REGION</div><div class="value" id="region">—</div></div>
-          <div class="item wide"><div class="label">COORDINATES</div><div class="value coords" id="coords">—</div></div></div>
-          <div class="actions"><button class="primary" id="refresh">Refresh location</button><button id="map" disabled>Open map</button></div><p id="status">Connecting to location service…</p></section>
-          <p class="note">IP-based location is approximate, not an exact GPS or home address. Data provided by <a href="https://ipapi.co/" target="_blank">ipapi.co</a>.</p>
-          </main><script>
-          const $=id=>document.getElementById(id);
-          let coords=null;
-          const show=(id,v)=>$(id).textContent=(v===null||v===undefined||v==="")?"Unavailable":v;
-          async function getJson(url){
-            const controller=new AbortController();
-            const timer=setTimeout(()=>controller.abort(),9000);
-            try{
-              const response=await fetch(url,{cache:"no-store",signal:controller.signal});
-              if(!response.ok) throw new Error("HTTP "+response.status);
-              return await response.json();
-            } finally { clearTimeout(timer); }
-          }
+          :root{color-scheme:dark;--bg:#0b1220;--panel:#121e30;--text:#edf5ff;--muted:#9aabc1;--accent:#54d6c8;--line:#26364c}
+          body.light{color-scheme:light;--bg:#edf3f8;--panel:#fff;--text:#172235;--muted:#607086;--accent:#087f78;--line:#d7e0ea}
+          *{box-sizing:border-box}body{margin:0;background:radial-gradient(circle at 80% 0,#1a3850 0,transparent 35%),var(--bg);color:var(--text);font:15px system-ui,-apple-system,sans-serif;min-height:100vh}
+          .wrap{max-width:720px;margin:auto;padding:22px 16px 38px}.top{display:flex;justify-content:space-between;align-items:center;margin-bottom:22px}.brand{font-size:25px;font-weight:850;letter-spacing:.3px}.brand span{color:var(--accent)}button{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:13px;padding:11px 14px;font-weight:650;cursor:pointer}
+          .hero,.card{background:var(--panel);border:1px solid var(--line);border-radius:22px;padding:20px;margin:13px 0;box-shadow:0 12px 32px #0002}.eyebrow{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:1.4px}.ip{font-size:clamp(26px,7vw,42px);font-weight:850;overflow-wrap:anywhere;margin:8px 0}.status{color:var(--accent);font-size:13px}.actions{display:flex;gap:9px;flex-wrap:wrap}.primary{background:var(--accent);color:#06201e;border:0}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:11px}.item{background:color-mix(in srgb,var(--panel),var(--bg) 25%);border:1px solid var(--line);border-radius:15px;padding:13px;min-width:0}.k{color:var(--muted);font-size:12px;margin-bottom:7px}.v{font-weight:700;overflow-wrap:anywhere}.wide{grid-column:1/-1}.map{display:block;text-align:center;text-decoration:none;color:var(--accent);padding:12px;border:1px solid var(--line);border-radius:13px;margin-top:12px}.note{color:var(--muted);font-size:12px;line-height:1.6}.meter{height:8px;background:var(--line);border-radius:20px;overflow:hidden;margin-top:10px}.meter i{display:block;height:100%;width:0;background:var(--accent);transition:width .3s}.hidden{display:none}@media(max-width:420px){.grid{grid-template-columns:1fr}.wide{grid-column:auto}}
+          </style></head>
+          <body><main class="wrap">
+          <header class="top"><div class="brand">Marsh <span>IP</span></div><button id="theme">☀️ / 🌙</button></header>
+          <section class="hero"><div class="eyebrow">Your public IP address</div><div class="ip" id="ip">Loading…</div><div class="status" id="status">Connecting to IP services…</div>
+          <div class="actions" style="margin-top:17px"><button class="primary" id="refresh">↻ Refresh</button><button id="copy">Copy IP</button><button id="share">Share details</button></div></section>
+          <section class="card"><div class="eyebrow" style="margin-bottom:14px">Network details</div><div class="grid">
+          <div class="item"><div class="k">IPv4</div><div class="v" id="ipv4">—</div></div>
+          <div class="item"><div class="k">IPv6</div><div class="v" id="ipv6">Checking…</div></div>
+          <div class="item"><div class="k">Country</div><div class="v" id="country">—</div></div>
+          <div class="item"><div class="k">Region / City</div><div class="v" id="city">—</div></div>
+          <div class="item"><div class="k">Internet provider</div><div class="v" id="isp">—</div></div>
+          <div class="item"><div class="k">Timezone</div><div class="v" id="timezone">—</div></div>
+          <div class="item"><div class="k">Connection type</div><div class="v" id="connection">Not supported by device</div></div>
+          <div class="item"><div class="k">Approx. coordinates</div><div class="v" id="coords">—</div></div>
+          </div><a class="map hidden" id="map" target="_blank" rel="noopener">Open approximate location in map ↗</a>
+          <p class="note">IP location is an estimate based on your internet provider's network. It does not reveal your exact home address or GPS position.</p></section>
+          <section class="card"><div class="eyebrow">Connection speed test</div><p class="note">A small test against Cloudflare. Results are estimates and use a little mobile data.</p>
+          <div class="grid"><div class="item"><div class="k">Ping</div><div class="v" id="ping">—</div></div><div class="item"><div class="k">Download</div><div class="v" id="down">—</div></div><div class="item"><div class="k">Upload</div><div class="v" id="up">—</div></div></div>
+          <div class="meter"><i id="progress"></i></div><button class="primary" id="speed" style="margin-top:14px">Start speed test</button><div class="note" id="speedStatus" style="margin-top:9px">No test has been run.</div></section>
+          <p class="note" style="text-align:center">Marsh IP · Version 3.0</p>
+          </main>
+          <script>
+          const $=id=>document.getElementById(id);let info={};
+          async function json(url){const r=await fetch(url,{cache:'no-store'});if(!r.ok)throw Error('HTTP '+r.status);return r.json()}
+          async function getIp(url){try{const d=await json(url);return d.ip||d.ipAddress||null}catch(e){return null}}
           async function load(){
-            $("status").textContent="Trying location services…";
-            $("refresh").disabled=true; $("map").disabled=true; coords=null;
-            let data=null, provider="";
-            const providers=[
-              async()=>{const d=await getJson("https://ipwho.is/");if(!d.success)throw Error(d.message||"ipwho.is failed");return {ip:d.ip,city:d.city,country:d.country,region:d.region,lat:d.latitude,lon:d.longitude};},
-              async()=>{const d=await getJson("https://ipapi.co/json/");if(d.error||!d.ip)throw Error("ipapi.co failed");return {ip:d.ip,city:d.city,country:d.country_name,region:d.region,lat:d.latitude,lon:d.longitude};},
-              async()=>{const d=await getJson("https://ipinfo.io/json");if(!d.ip)throw Error("ipinfo failed");const p=(d.loc||"").split(",");return {ip:d.ip,city:d.city,country:d.country,region:d.region,lat:Number(p[0]),lon:Number(p[1])};}
-            ];
-            for(let n=0;n<providers.length;n++){
-              try{data=await providers[n]();provider=["ipwho.is","ipapi.co","ipinfo.io"][n];break;}
-              catch(e){console.warn("Location provider failed",n,e);}
+            $('status').textContent='Checking public IP…';$('ip').textContent='Loading…';
+            const [v4,v6]=await Promise.all([getIp('https://api.ipify.org?format=json'),getIp('https://api6.ipify.org?format=json')]);
+            $('ipv4').textContent=v4||'Unavailable';$('ipv6').textContent=v6||'Not available';$('ip').textContent=v4||v6||'Unavailable';
+            let data=null;
+            for(const url of ['https://ipwho.is/','https://ipapi.co/json/','https://ipinfo.io/json']){
+              try{data=await json(url);if(data&&((data.success!==false)&&(data.country||data.country_name||data.country_name)))break;data=null}catch(e){}
             }
-            if(!data){
-              try{const d=await getJson("https://api.ipify.org?format=json");if(d.ip)data={ip:d.ip};}
-              catch(e){console.warn("IP fallback failed",e);}
-            }
-            if(data && data.ip){
-              show("ip",data.ip);show("city",data.city);show("country",data.country);show("region",data.region);
-              if(Number.isFinite(data.lat)&&Number.isFinite(data.lon)){
-                coords=[data.lat,data.lon];show("coords",`${data.lat.toFixed(5)}, ${data.lon.toFixed(5)}`);$("map").disabled=false;
-              }else show("coords","Unavailable");
-              $("status").textContent=provider?`Location loaded using ${provider}.`:"IP detected; location details are temporarily unavailable.";
-            }else{
-              show("ip","Unavailable");show("city","Unavailable");show("country","Unavailable");show("region","Unavailable");show("coords","Unavailable");
-              $("status").textContent="Could not reach IP services. Try turning off VPN or changing network, then refresh.";
-            }
-            $("refresh").disabled=false;
+            if(data){
+              const country=data.country||data.country_name||'Unknown',code=(data.country_code||data.country||'').toString().toUpperCase();
+              const flag=/^[A-Z]{2}$/.test(code)?String.fromCodePoint(...[...code].map(c=>127397+c.charCodeAt(0))):'';
+              $('country').textContent=(flag?flag+' ':'')+country;
+              $('city').textContent=[data.region||data.region_name,data.city].filter(Boolean).join(' / ')||'Unknown';
+              $('isp').textContent=data.connection?.isp||data.org||data.org||data.isp||'Unknown';
+              $('timezone').textContent=data.timezone?.id||data.timezone||Intl.DateTimeFormat().resolvedOptions().timeZone||'Unknown';
+              let lat=data.latitude,lon=data.longitude;
+              if((lat==null||lon==null)&&data.loc){[lat,lon]=data.loc.split(',').map(Number)}
+              if(lat!=null&&lon!=null){$('coords').textContent=Number(lat).toFixed(3)+', '+Number(lon).toFixed(3);$('map').href='https://www.openstreetmap.org/?mlat='+lat+'&mlon='+lon+'#map=10/'+lat+'/'+lon;$('map').classList.remove('hidden')}
+              info={ip:v4||v6,country,city:$('city').textContent,isp:$('isp').textContent,timezone:$('timezone').textContent,coords:$('coords').textContent};
+              $('status').textContent='✓ IP information updated';
+            }else{$('status').textContent=(v4||v6)?'IP found · Location service unavailable':'Could not reach IP services. Check internet access.'}
+            const c=navigator.connection||navigator.mozConnection||navigator.webkitConnection;
+            if(c)$('connection').textContent=[c.type,c.effectiveType].filter(Boolean).join(' · ')||'Unknown';
           }
-          $("refresh").onclick=load;
-          $("copyIp").onclick=async()=>{try{await navigator.clipboard.writeText($("ip").textContent);$("status").textContent="IP address copied.";}catch(e){$("status").textContent="Copy is unavailable in this browser.";}};
-          $("map").onclick=()=>{if(coords)window.open(`https://www.openstreetmap.org/?mlat=${coords[0]}&mlon=${coords[1]}#map=12/${coords[0]}/${coords[1]}`,"_blank");};
+          $('refresh').onclick=load;$('copy').onclick=async()=>{const value=$('ip').textContent;if(value&&value!=='Loading…'&&value!=='Unavailable'){try{await navigator.clipboard.writeText(value);$('status').textContent='IP copied'}catch(e){$('status').textContent='Copy is not supported'}}};
+          $('share').onclick=()=>{const t=Object.entries(info).map(([k,v])=>k+': '+v).join('\\n');if(navigator.share)navigator.share({title:'Marsh IP',text:t}).catch(()=>{});else if(navigator.clipboard)navigator.clipboard.writeText(t).then(()=>$('status').textContent='Details copied')};
+          $('theme').onclick=()=>{document.body.classList.toggle('light');localStorage.setItem('marsh-theme',document.body.classList.contains('light')?'light':'dark')};
+          if(localStorage.getItem('marsh-theme')==='light')document.body.classList.add('light');
+          $('speed').onclick=async()=>{
+            const btn=$('speed');btn.disabled=true;$('speedStatus').textContent='Testing…';$('progress').style.width='5%';
+            try{
+              const t0=performance.now();await fetch('https://www.cloudflare.com/cdn-cgi/trace?x='+Math.random(),{cache:'no-store',mode:'no-cors'});const ping=Math.round(performance.now()-t0);$('ping').textContent=ping+' ms';$('progress').style.width='30%';
+              const size=2*1024*1024, start=performance.now();const r=await fetch('https://speed.cloudflare.com/__down?bytes='+size+'&r='+Math.random(),{cache:'no-store'});if(!r.ok)throw Error('Download test unavailable');await r.arrayBuffer();const secs=(performance.now()-start)/1000;$('down').textContent=((size*8/secs)/1e6).toFixed(2)+' Mbps';$('progress').style.width='65%';
+              const payload=new Uint8Array(256*1024);crypto.getRandomValues(payload);const u0=performance.now();const up=await fetch('https://speed.cloudflare.com/__up',{method:'POST',body:payload});if(!up.ok)throw Error('Upload test unavailable');await up.text();const us=(performance.now()-u0)/1000;$('up').textContent=((payload.length*8/us)/1e6).toFixed(2)+' Mbps';$('progress').style.width='100%';$('speedStatus').textContent='Test complete · Approximate results';
+            }catch(e){$('speedStatus').textContent='Speed test could not finish. The test server may be blocked or unavailable.';$('progress').style.width='0%'}
+            btn.disabled=false;
+          };
           load();
           </script></body></html>
           EOF
 
-      # Pin the build to Java 17; Gradle 8.9 / Android Gradle Plugin 8.7.3
-      # cannot run with the Java 25 runtime that caused the previous failure.
-      - name: Set up Java 17
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: "17"
-
       - name: Build APK
-        uses: gradle/gradle-build-action@v3
-        with:
-          gradle-version: "8.9"
-          build-root-directory: android
-          arguments: assembleDebug
+        run: |
+          gradle wrapper --gradle-version 8.9
+          chmod +x gradlew
+          ./gradlew assembleDebug
 
-      - name: Upload APK artifact
+      - name: Upload APK
         uses: actions/upload-artifact@v4
         with:
           name: Marsh-IP-APK
-          path: android/app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/app-debug.apk
           if-no-files-found: error
           
