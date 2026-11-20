@@ -1,0 +1,146 @@
+name: Build Marsh IP APK
+
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - ".github/workflows/build.yml"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Android project
+        shell: bash
+        run: |
+          mkdir -p android/app/src/main/java/com/marship
+          mkdir -p android/app/src/main/res/values
+          mkdir -p android/app/src/main/assets
+
+          cat > android/settings.gradle <<'EOF'
+          pluginManagement { repositories { google(); mavenCentral(); gradlePluginPortal() } }
+          dependencyResolutionManagement { repositoriesMode.set(RepositoriesMode.FAIL_ON_PROJECT_REPOS); repositories { google(); mavenCentral() } }
+          rootProject.name = "MarshIP"
+          include(":app")
+          EOF
+
+          cat > android/build.gradle <<'EOF'
+          plugins {
+              id 'com.android.application' version '8.7.3' apply false
+          }
+          EOF
+
+          cat > android/gradle.properties <<'EOF'
+          org.gradle.jvmargs=-Xmx2048m -Dfile.encoding=UTF-8
+          android.useAndroidX=true
+          EOF
+
+          cat > android/app/build.gradle <<'EOF'
+          plugins { id 'com.android.application' }
+          android {
+              namespace 'com.marship'
+              compileSdk 35
+              defaultConfig {
+                  applicationId 'com.marship'
+                  minSdk 23
+                  targetSdk 35
+                  versionCode 1
+                  versionName '1.0'
+              }
+          }
+          EOF
+
+          cat > android/app/src/main/AndroidManifest.xml <<'EOF'
+          <manifest xmlns:android="http://schemas.android.com/apk/res/android">
+              <uses-permission android:name="android.permission.INTERNET" />
+              <application android:theme="@style/AppTheme" android:label="Marsh IP" android:usesCleartextTraffic="false" android:hardwareAccelerated="true">
+                  <activity android:name=".MainActivity" android:exported="true">
+                      <intent-filter>
+                          <action android:name="android.intent.action.MAIN" />
+                          <category android:name="android.intent.category.LAUNCHER" />
+                      </intent-filter>
+                  </activity>
+              </application>
+          </manifest>
+          EOF
+
+          cat > android/app/src/main/res/values/styles.xml <<'EOF'
+          <resources>
+              <style name="AppTheme" parent="@android:style/Theme.Material.NoActionBar">
+                  <item name="android:fontFamily">sans</item>
+                  <item name="android:colorAccent">#55D6E8</item>
+                  <item name="android:statusBarColor">#090D18</item>
+                  <item name="android:navigationBarColor">#090D18</item>
+                  <item name="android:windowLightStatusBar">false</item>
+              </style>
+          </resources>
+          EOF
+
+          cat > android/app/src/main/java/com/marship/MainActivity.java <<'EOF'
+          package com.marship;
+          import android.app.Activity;
+          import android.os.Bundle;
+          import android.webkit.WebChromeClient;
+          import android.webkit.WebView;
+          import android.webkit.WebViewClient;
+          import android.webkit.WebSettings;
+          public class MainActivity extends Activity {
+              @Override public void onCreate(Bundle savedInstanceState) {
+                  super.onCreate(savedInstanceState);
+                  WebView web = new WebView(this);
+                  WebSettings settings = web.getSettings();
+                  settings.setJavaScriptEnabled(true);
+                  settings.setDomStorageEnabled(true);
+                  web.setWebViewClient(new WebViewClient());
+                  web.setWebChromeClient(new WebChromeClient());
+                  setContentView(web);
+                  web.loadUrl("file:///android_asset/index.html");
+              }
+          }
+          EOF
+
+          cat > android/app/src/main/assets/index.html <<'EOF'
+          <!doctype html>
+          <html lang="en"><head>
+          <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+          <meta name="theme-color" content="#090d18"><title>Marsh IP</title>
+          <style>
+          :root{color-scheme:dark;--bg:#090d18;--line:#263247;--muted:#94a3b8;--white:#f8fafc;--cyan:#55d6e8}
+          *{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(ellipse at 50% -10%,#1b3155 0,transparent 55%),var(--bg);color:var(--white);font-family:system-ui,sans-serif;display:flex;justify-content:center;padding:28px 16px}
+          main{width:min(100%,620px)}header{text-align:center;margin:14px 0 28px}.brand{font-size:clamp(32px,8vw,48px);font-weight:850;letter-spacing:-2px;margin:0}.brand span{color:var(--cyan)}.sub{color:var(--muted);margin:8px 0 0;font-size:14px;letter-spacing:2px;text-transform:uppercase}
+          .card{background:linear-gradient(145deg,#162135f5,#0e1523fa);border:1px solid var(--line);border-radius:22px;padding:22px;margin:14px 0;box-shadow:0 18px 55px #0005}.eyebrow{font-size:12px;color:var(--muted);letter-spacing:1.8px;font-weight:700}.iprow{display:flex;align-items:center;gap:12px;margin-top:10px}#ip{font-size:clamp(25px,7vw,36px);font-weight:800;overflow-wrap:anywhere;flex:1}
+          button{border:1px solid #3a4c69;background:#1b2a43;color:#eaf5ff;border-radius:12px;padding:11px 14px;font-weight:700}.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:16px}.item{background:#0b1322;border:1px solid #202d42;border-radius:15px;padding:15px;min-width:0}.label{font-size:11px;color:var(--muted);letter-spacing:1.4px;font-weight:700}.value{font-size:18px;font-weight:700;margin-top:8px;overflow-wrap:anywhere}.wide{grid-column:1/-1}.coords{font-size:15px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:17px}.primary{background:linear-gradient(100deg,#267caa,#4c70d8);border:0}#status{color:var(--muted);font-size:13px;margin:14px 2px 0;min-height:20px}.note{color:#8998ad;font-size:12px;line-height:1.6;text-align:center;margin:20px 8px}a{color:#8bd9ed}
+          </style></head><body><main>
+          <header><h1 class="brand"><span>M</span>arsh <span>IP</span></h1><p class="sub">Your public IP &amp; location</p></header>
+          <section class="card"><div class="eyebrow">IP ADDRESS</div><div class="iprow"><div id="ip">Loading…</div><button id="copyIp">Copy</button></div></section>
+          <section class="card"><div class="eyebrow">IP LOCATION</div><div class="grid">
+          <div class="item"><div class="label">CITY</div><div class="value" id="city">—</div></div>
+          <div class="item"><div class="label">COUNTRY</div><div class="value" id="country">—</div></div>
+          <div class="item wide"><div class="label">REGION</div><div class="value" id="region">—</div></div>
+          <div class="item wide"><div class="label">COORDINATES</div><div class="value coords" id="coords">—</div></div></div>
+          <div class="actions"><button class="primary" id="refresh">Refresh location</button><button id="map" disabled>Open map</button></div><p id="status">Connecting to location service…</p></section>
+          <p class="note">IP-based location is approximate, not an exact GPS or home address. Data provided by <a href="https://ipapi.co/" target="_blank">ipapi.co</a>.</p>
+          </main><script>
+          const $=id=>document.getElementById(id);let coords=null;const show=(id,v)=>$(id).textContent=v||"Unavailable";
+          async function load(){ $("status").textContent="Getting your public IP and approximate location…";$("refresh").disabled=true;$("map").disabled=true;
+          try{const r=await fetch("https://ipapi.co/json/",{cache:"no-store"});if(!r.ok)throw Error();const d=await r.json();if(d.error)throw Error();show("ip",d.ip);show("city",d.city);show("country",d.country_name);show("region",d.region);
+          if(Number.isFinite(d.latitude)&&Number.isFinite(d.longitude)){coords=[d.latitude,d.longitude];show("coords",`${d.latitude.toFixed(5)}, ${d.longitude.toFixed(5)}`);$("map").disabled=false;}else{coords=null;show("coords","Unavailable");}
+          $("status").textContent="Location updated.";}catch(e){$("status").textContent="Could not load location. Check internet and try again.";if($("ip").textContent==="Loading…")$("ip").textContent="Unavailable";}finally{$("refresh").disabled=false;}}
+          $("refresh").onclick=load;$("copyIp").onclick=async()=>{try{await navigator.clipboard.writeText($("ip").textContent);$("status").textContent="IP address copied.";}catch(e){$("status").textContent="Copy unavailable.";}};$("map").onclick=()=>{if(coords)window.open(`https://www.openstreetmap.org/?mlat=${coords[0]}&mlon=${coords[1]}#map=12/${coords[0]}/${coords[1]}`);};load();
+          </script></body></html>
+          EOF
+
+      - name: Build APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: "8.9"
+          build-root-directory: android
+          arguments: assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Marsh-IP-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
+          
