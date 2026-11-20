@@ -290,4 +290,273 @@ jobs:
             en:{}, 
             fa:{
               "Your public IP & location":"آی‌پی عمومی و موقعیت شما","IP ADDRESS":"آدرس آی‌پی","WORLD MAP":"نقشه جهان",
-              "Refresh":"بروزرسانی","Refreshing…"
+              "Refresh":"بروزرسانی","Refreshing…":"در حال بروزرسانی…","Looking up your connection…":"در حال بررسی اتصال شما…",
+              "CONNECTION & LOCATION":"اتصال و موقعیت","ISP":"ارائه‌دهنده اینترنت","CITY":"شهر","COUNTRY":"کشور","REGION":"استان / منطقه",
+              "COORDINATES":"مختصات","APPROXIMATE LOCATION":"موقعیت تقریبی","IP-based location is approximate, not an exact GPS position or home address.":"موقعیت مبتنی بر آی‌پی تقریبی است و مکان دقیق GPS یا نشانی منزل نیست.",
+              "INTERNET SPEED TEST":"تست سرعت اینترنت","Ready":"آماده","Start test":"شروع تست","DOWNLOAD":"دانلود","UPLOAD":"آپلود","PING":"پینگ","JITTER":"جیتر",
+              "Theme":"پوسته","Dark, light or follow the phone":"تیره، روشن یا هماهنگ با گوشی","Animations":"انیمیشن‌ها","Background, transitions and pulses":"پس‌زمینه، جابه‌جایی‌ها و جلوه‌ها",
+              "Language":"زبان","Choose the app language":"زبان برنامه را انتخاب کنید","Home":"خانه","Details":"جزئیات","Speed":"سرعت","Settings":"تنظیمات",
+              "Copy":"کپی","Unavailable":"در دسترس نیست","No IPv4 detected":"IPv4 شناسایی نشد","No IPv6 on this connection":"IPv6 در این اتصال موجود نیست",
+              "Could not refresh. Check your connection and try again.":"بروزرسانی انجام نشد. اتصال اینترنت را بررسی و دوباره تلاش کنید."
+            },
+            de:{
+              "Your public IP & location":"Ihre öffentliche IP und Ihr Standort","IP ADDRESS":"IP-ADRESSE","WORLD MAP":"WELTKARTE",
+              "Refresh":"Aktualisieren","Refreshing…":"Wird aktualisiert…","Looking up your connection…":"Verbindung wird gesucht…",
+              "CONNECTION & LOCATION":"VERBINDUNG & STANDORT","ISP":"INTERNETANBIETER","CITY":"STADT","COUNTRY":"LAND","REGION":"REGION",
+              "COORDINATES":"KOORDINATEN","APPROXIMATE LOCATION":"UNGEFÄHRER STANDORT","IP-based location is approximate, not an exact GPS position or home address.":"Der IP-basierte Standort ist ungefähr und keine genaue GPS-Position oder Wohnadresse.",
+              "INTERNET SPEED TEST":"INTERNET-GESCHWINDIGKEITSTEST","Ready":"Bereit","Start test":"Test starten","DOWNLOAD":"DOWNLOAD","UPLOAD":"UPLOAD","PING":"PING","JITTER":"JITTER",
+              "Theme":"Design","Dark, light or follow the phone":"Dunkel, hell oder wie auf dem Gerät","Animations":"Animationen","Background, transitions and pulses":"Hintergrund, Übergänge und Effekte",
+              "Language":"Sprache","Choose the app language":"App-Sprache auswählen","Home":"Start","Details":"Details","Speed":"Geschwindigkeit","Settings":"Einstellungen",
+              "Copy":"Kopieren","Unavailable":"Nicht verfügbar","No IPv4 detected":"Keine IPv4 erkannt","No IPv6 on this connection":"Kein IPv6 in dieser Verbindung",
+              "Could not refresh. Check your connection and try again.":"Aktualisierung fehlgeschlagen. Verbindung prüfen und erneut versuchen."
+            },
+            ru:{
+              "Your public IP & location":"Ваш публичный IP и местоположение","IP ADDRESS":"IP-АДРЕС","WORLD MAP":"КАРТА МИРА",
+              "Refresh":"Обновить","Refreshing…":"Обновление…","Looking up your connection…":"Проверка подключения…",
+              "CONNECTION & LOCATION":"ПОДКЛЮЧЕНИЕ И МЕСТОПОЛОЖЕНИЕ","ISP":"ПРОВАЙДЕР","CITY":"ГОРОД","COUNTRY":"СТРАНА","REGION":"РЕГИОН",
+              "COORDINATES":"КООРДИНАТЫ","APPROXIMATE LOCATION":"ПРИБЛИЗИТЕЛЬНОЕ МЕСТОПОЛОЖЕНИЕ","IP-based location is approximate, not an exact GPS position or home address.":"Местоположение по IP приблизительное, это не точная GPS-позиция и не домашний адрес.",
+              "INTERNET SPEED TEST":"ТЕСТ СКОРОСТИ ИНТЕРНЕТА","Ready":"Готово","Start test":"Начать тест","DOWNLOAD":"СКАЧИВАНИЕ","UPLOAD":"ЗАГРУЗКА","PING":"ПИНГ","JITTER":"ДЖИТТЕР",
+              "Theme":"Тема","Dark, light or follow the phone":"Тёмная, светлая или как на устройстве","Animations":"Анимация","Background, transitions and pulses":"Фон, переходы и эффекты",
+              "Language":"Язык","Choose the app language":"Выберите язык приложения","Home":"Главная","Details":"Подробности","Speed":"Скорость","Settings":"Настройки",
+              "Copy":"Копировать","Unavailable":"Недоступно","No IPv4 detected":"IPv4 не обнаружен","No IPv6 on this connection":"IPv6 в этом подключении отсутствует",
+              "Could not refresh. Check your connection and try again.":"Не удалось обновить. Проверьте подключение и повторите попытку."
+            }
+          };
+          Object.assign(translations.fa,{'Details': 'جزئیات', 'WORLD MAP': 'نقشه جهان', 'IP ADDRESS': 'آدرس آی\u200cپی', 'Nothing to copy': 'موردی برای کپی وجود ندارد', 'Copied': 'کپی شد', 'Copy is unavailable': 'امکان کپی وجود ندارد', 'Testing…': 'در حال آزمایش…', 'Test again': 'آزمایش دوباره', 'Measuring ping': 'اندازه\u200cگیری پینگ', 'Download': 'دانلود', 'Upload': 'آپلود', 'Done': 'تمام شد', 'Failed': 'ناموفق', 'Test failed — check your connection': 'آزمایش ناموفق بود؛ اتصال اینترنت را بررسی کنید', 'Could not reach IP services. Turn off VPN or change network, then refresh.': 'ارتباط با سرویس\u200cهای IP برقرار نشد. VPN را خاموش کنید یا شبکه را تغییر دهید و دوباره بروزرسانی کنید.', 'IP detected; location details are unavailable.': 'آی\u200cپی شناسایی شد؛ جزئیات موقعیت در دسترس نیست.', 'Loaded using ': 'دریافت اطلاعات با استفاده از ', 'MBPS': 'مگابیت\u200cبرثانیه'});
+          Object.assign(translations.de,{'Nothing to copy': 'Nichts zum Kopieren', 'Copied': 'Kopiert', 'Copy is unavailable': 'Kopieren nicht verfügbar', 'Testing…': 'Test läuft…', 'Test again': 'Erneut testen', 'Measuring ping': 'Ping wird gemessen', 'Download': 'Download', 'Upload': 'Upload', 'Done': 'Fertig', 'Failed': 'Fehlgeschlagen', 'Test failed — check your connection': 'Test fehlgeschlagen – Verbindung prüfen', 'Could not reach IP services. Turn off VPN or change network, then refresh.': 'IP-Dienste nicht erreichbar. VPN ausschalten oder Netzwerk wechseln und erneut aktualisieren.', 'IP detected; location details are unavailable.': 'IP erkannt; Standortdetails sind nicht verfügbar.', 'Loaded using ': 'Daten geladen über ', 'MBPS': 'Mbit/s'});
+          Object.assign(translations.ru,{'Nothing to copy': 'Нечего копировать', 'Copied': 'Скопировано', 'Copy is unavailable': 'Копирование недоступно', 'Testing…': 'Идёт тест…', 'Test again': 'Повторить тест', 'Measuring ping': 'Измерение пинга', 'Download': 'Скачивание', 'Upload': 'Отправка', 'Done': 'Готово', 'Failed': 'Ошибка', 'Test failed — check your connection': 'Тест не удался — проверьте подключение', 'Could not reach IP services. Turn off VPN or change network, then refresh.': 'Нет доступа к IP-сервисам. Отключите VPN или смените сеть и обновите данные.', 'IP detected; location details are unavailable.': 'IP обнаружен; данные о местоположении недоступны.', 'Loaded using ': 'Данные получены через ', 'MBPS': 'Мбит/с'});
+          const tr=(text)=>((translations[S.lang]||{})[text]||text);
+          const originalTextNodes=new WeakMap();
+          function applyLanguage(){
+            const lang=S.lang||"en";
+            document.documentElement.lang=lang;
+            document.documentElement.dir=lang==="fa"?"rtl":"ltr";
+            const walker=document.createTreeWalker(document.body,NodeFilter.SHOW_TEXT);
+            let node;
+            while((node=walker.nextNode())){
+              if(!originalTextNodes.has(node))originalTextNodes.set(node,node.nodeValue);
+              const original=originalTextNodes.get(node);
+              const clean=original.trim();
+              const translated=tr(clean);
+              if(translated!==clean){
+                const leading=original.match(/^\\s*/)?.[0]||"";
+                const trailing=original.match(/\\s*$/)?.[0]||"";
+                node.nodeValue=leading+translated+trailing;
+              }else if(lang==="en"){node.nodeValue=original;}
+            }
+            $("languageSelect").value=lang;
+            if(lang==="fa"){document.body.style.fontFamily="Tahoma, system-ui, sans-serif";}
+            else{document.body.style.fontFamily="system-ui, sans-serif";}
+          }
+          const S={theme:"dark",anim:true,lang:"en"};
+          try{Object.assign(S,JSON.parse(localStorage.getItem("marship")||"{}"));}catch(e){}
+          const save=()=>{try{localStorage.setItem("marship",JSON.stringify(S));}catch(e){}};
+          const maps={};
+          // World map is a bundled Natural Earth vector layer: no API key and no tile-watermarks.
+          const cityTileUrl="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png";
+          function initMap(key,el){
+            if(typeof L==="undefined")return;
+            const isWorld=key==="world";
+            const m=L.map(el,{zoomControl:false,worldCopyJump:true,minZoom:isWorld?1:2,maxZoom:isWorld?5:18,
+              maxBounds:[[-88,-180],[88,180]],maxBoundsViscosity:0.7,
+              zoomSnap:isWorld?0.1:1,zoomDelta:isWorld?0.25:1}).setView([20,0],isWorld?1.35:2);
+            let tiles=null,worldLayer=null;
+            if(isWorld&&window.WORLD_COUNTRIES){
+              worldLayer=L.geoJSON(window.WORLD_COUNTRIES,{style:()=>({color:"#DCEAF2",weight:0.65,opacity:1,fillColor:"#075078",fillOpacity:1})}).addTo(m);
+              m.fitBounds([[-58,-180],[84,180]],{padding:[8,8],animate:false});
+            }else{
+              tiles=L.tileLayer(cityTileUrl,{subdomains:"abc",minZoom:2,maxZoom:19,
+                attribution:'© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+                crossOrigin:true}).addTo(m);
+            }
+            maps[key]={m,tiles,worldLayer,marker:null,circle:null};
+          }
+          function applyTheme(){
+            let t=S.theme;
+            if(t==="auto")t=matchMedia("(prefers-color-scheme: light)").matches?"light":"dark";
+            document.documentElement.dataset.theme=t;
+            document.body.classList.toggle("noanim",!S.anim);
+            for(const k in maps){if(maps[k].tiles)maps[k].tiles.setUrl(cityTileUrl);}
+            document.querySelectorAll("#themeSeg button").forEach(b=>b.classList.toggle("on",b.dataset.th===S.theme));
+            $("animSw").classList.toggle("on",S.anim);
+          }
+          function toast(msg){const t=$("toast");t.textContent=msg;t.classList.add("show");clearTimeout(toast.t);toast.t=setTimeout(()=>t.classList.remove("show"),1800);}
+          function tab(n){
+            document.querySelectorAll(".tab").forEach(e=>e.classList.toggle("on",e.id==="t-"+n));
+            document.querySelectorAll("#nav button").forEach(b=>b.classList.toggle("on",b.dataset.t===n));
+            window.scrollTo(0,0);
+            setTimeout(()=>{for(const k in maps)maps[k].m.invalidateSize();},80);
+          }
+          async function copyText(t){
+            if(!t){toast(tr("Nothing to copy"));return;}
+            try{await navigator.clipboard.writeText(t);toast(tr("Copied"));return;}catch(e){}
+            try{const a=document.createElement("textarea");a.value=t;a.style.position="fixed";a.style.opacity="0";document.body.appendChild(a);a.select();document.execCommand("copy");a.remove();toast(tr("Copied"));}
+            catch(e){toast(tr("Copy is unavailable"));}
+          }
+          async function getJson(url,ms=9000){
+            const c=new AbortController(),t=setTimeout(()=>c.abort(),ms);
+            try{const r=await fetch(url,{cache:"no-store",signal:c.signal});if(!r.ok)throw Error("HTTP "+r.status);return await r.json();}
+            finally{clearTimeout(t);}
+          }
+          const flag=cc=>cc&&cc.length===2?String.fromCodePoint(...[...cc.toUpperCase()].map(c=>127397+c.charCodeAt(0))):"";
+          const val=(id,v)=>{$(id).textContent=(v===null||v===undefined||v==="")?tr("Unavailable"):v;};
+
+          const providers=[
+            ["ipwho.is",async()=>{const d=await getJson("https://ipwho.is/");if(!d.success)throw Error("fail");const c=d.connection||{};return{ip:d.ip,city:d.city,country:d.country,cc:d.country_code,region:d.region,lat:d.latitude,lon:d.longitude,isp:c.isp||c.org};}],
+            ["ipapi.co",async()=>{const d=await getJson("https://ipapi.co/json/");if(d.error||!d.ip)throw Error("fail");return{ip:d.ip,city:d.city,country:d.country_name,cc:d.country_code,region:d.region,lat:d.latitude,lon:d.longitude,isp:d.org};}],
+            ["ipinfo.io",async()=>{const d=await getJson("https://ipinfo.io/json");if(!d.ip)throw Error("fail");const p=(d.loc||"").split(",");return{ip:d.ip,city:d.city,country:d.country,cc:d.country,region:d.region,lat:Number(p[0]),lon:Number(p[1]),isp:d.org};}]
+          ];
+          async function geo(){
+            for(const [name,fn] of providers){try{const d=await fn();d.provider=name;return d;}catch(e){console.warn(name,e);}}
+            return null;
+          }
+          function setMarker(key,lat,lon,zoom,radius){
+            const o=maps[key];if(!o)return;
+            const ll=[lat,lon];
+            if(o.marker)o.marker.setLatLng(ll);
+            else o.marker=L.marker(ll,{icon:L.divIcon({className:"pin",html:'<svg width="34" height="42" viewBox="0 0 34 42" aria-hidden="true"><path d="M17 1C8.2 1 1 8.1 1 16.8 1 28 17 41 17 41S33 28 33 16.8C33 8.1 25.8 1 17 1Z"/><circle cx="17" cy="16" r="6"/></svg>',iconSize:[34,42],iconAnchor:[17,41]}),interactive:false}).addTo(o.m);
+            if(radius){if(o.circle)o.circle.setLatLng(ll);else o.circle=L.circle(ll,{radius,color:"#55d6e8",weight:1,fillOpacity:.12}).addTo(o.m);}
+            // Keep the complete world visible; the pin marks the IP-geolocated country/city.
+            if(key==="world"){o.m.fitBounds([[-58,-180],[84,180]],{padding:[8,8],animate:false});}
+            else{o.m.flyTo(ll,zoom,{duration:S.anim?1.4:0});}
+          }
+          let ip4=null,ip6=null;
+          async function load(){
+            const refreshButton=$("refresh");
+            if(refreshButton.disabled)return;
+            $("status").textContent=tr("Looking up your connection…");
+            refreshButton.disabled=true;
+            refreshButton.textContent=tr("Refreshing…");
+            try{
+            const p4=getJson("https://api.ipify.org?format=json",7000).then(d=>d.ip).catch(()=>null);
+            const p6=getJson("https://api6.ipify.org?format=json",7000).then(d=>d.ip).catch(()=>null);
+            const [a,b,g]=await Promise.all([p4,p6,geo()]);
+            ip4=a||(g&&g.ip&&g.ip.includes(".")?g.ip:null);
+            ip6=b||(g&&g.ip&&g.ip.includes(":")?g.ip:null);
+            [["ip4",ip4,"No IPv4 detected"],["ip6",ip6,"No IPv6 on this connection"]].forEach(([id,v,empty])=>{$(id).textContent=v||empty;$(id).classList.toggle("dim",!v);});
+            if(g){
+              val("isp",g.isp);val("city",g.city);val("country",(flag(g.cc)+" "+(g.country||"")).trim());val("region",g.region);
+              $("mapLabel").textContent=(flag(g.cc)+" "+(g.country||"Unknown")).trim();
+              if(Number.isFinite(g.lat)&&Number.isFinite(g.lon)){
+                val("coords",g.lat.toFixed(5)+", "+g.lon.toFixed(5));
+                setMarker("world",g.lat,g.lon,3);setMarker("city",g.lat,g.lon,9,20000);
+              }else val("coords",null);
+              $("status").textContent=tr("Loaded using ")+g.provider+".";
+            }else{
+              ["isp","city","country","region","coords"].forEach(i=>val(i,null));
+              $("mapLabel").textContent="Unavailable";
+              $("status").textContent=(ip4||ip6)?tr("IP detected; location details are unavailable."):tr("Could not reach IP services. Turn off VPN or change network, then refresh.");
+            }
+            }catch(err){
+              console.error("Refresh failed",err);
+              $("status").textContent=tr("Could not refresh. Check your connection and try again.");
+            }finally{
+              refreshButton.disabled=false;
+              refreshButton.textContent=tr("Refresh");
+            }
+          }
+
+          /* ---------- speed test (Cloudflare) ---------- */
+          const CF="https://speed.cloudflare.com/";
+          const arc=v=>Math.min(1,Math.log10(1+v)/Math.log10(501))*100;
+          let shown=0;
+          function gauge(v){shown=shown*.6+v*.4;$("spd").textContent=shown<10?shown.toFixed(1):Math.round(shown);$("gv").style.strokeDasharray=arc(shown)+" 100";}
+          const fmt=v=>(v<10?v.toFixed(2):v.toFixed(1))+" Mbps";
+          async function pingTest(){
+            const t=[];
+            for(let i=0;i<8;i++){const s=performance.now();try{await fetch(CF+"__down?bytes=0&r="+Math.random(),{cache:"no-store"});t.push(performance.now()-s);}catch(e){}}
+            if(t.length<3)throw Error("ping");
+            t.shift();
+            const jit=t.slice(1).reduce((a,x,i)=>a+Math.abs(x-t[i]),0)/(t.length-1);
+            return{ping:Math.min(...t),jitter:jit};
+          }
+          async function downTest(){
+            const ac=new AbortController();let bytes=0,last=0;const start=performance.now();let lastT=start,t0=null,b0=0;
+            const worker=async()=>{try{while(!ac.signal.aborted){const r=await fetch(CF+"__down?bytes=25000000&r="+Math.random(),{cache:"no-store",signal:ac.signal});const rd=r.body.getReader();for(;;){const x=await rd.read();if(x.done)break;bytes+=x.value.length;}}}catch(e){}};
+            worker();worker();worker();
+            await new Promise(res=>{const iv=setInterval(()=>{const n=performance.now();if(n-start>1000&&t0===null){t0=n;b0=bytes;}
+              gauge((bytes-last)*8/((n-lastT)/1000)/1e6);last=bytes;lastT=n;if(n-start>9000){clearInterval(iv);res();}},200);});
+            const n=performance.now();ac.abort();
+            return t0?(bytes-b0)*8/((n-t0)/1000)/1e6:bytes*8/((n-start)/1000)/1e6;
+          }
+          async function upTest(){
+            const blob=new Blob([new Uint8Array(4000000)]);
+            const start=performance.now();let sent=0,last=0,lastT=start,stop=false;const xs=[];
+            const post=()=>new Promise(res=>{const x=new XMLHttpRequest();xs.push(x);let prev=0;
+              x.open("POST",CF+"__up");
+              x.upload.onprogress=e=>{sent+=e.loaded-prev;prev=e.loaded;};
+              x.onload=x.onerror=x.onabort=()=>res();x.send(blob);});
+            const worker=async()=>{while(!stop)await post();};
+            worker();worker();
+            await new Promise(res=>{const iv=setInterval(()=>{const n=performance.now();
+              gauge((sent-last)*8/((n-lastT)/1000)/1e6);last=sent;lastT=n;if(n-start>8000){clearInterval(iv);res();}},200);});
+            const n=performance.now();stop=true;xs.forEach(x=>x.abort());
+            return sent*8/((n-start)/1000)/1e6;
+          }
+          let running=false;
+          async function runTest(){
+            if(running)return;running=true;
+            const btn=$("startTest");btn.disabled=true;btn.textContent=tr("Testing…");
+            ["rDown","rUp","rPing","rJit"].forEach(i=>$(i).textContent="—");
+            shown=0;gauge(0);
+            try{
+              $("phase").textContent=tr("Measuring ping");
+              const p=await pingTest();$("rPing").textContent=p.ping.toFixed(0)+" ms";$("rJit").textContent=p.jitter.toFixed(1)+" ms";
+              $("phase").textContent=tr("Download");const d=await downTest();$("rDown").textContent=fmt(d);shown=d;gauge(d);
+              $("phase").textContent=tr("Upload");shown=0;
+              try{const u=await upTest();$("rUp").textContent=fmt(u);}catch(e){$("rUp").textContent="Failed";}
+              $("phase").textContent=tr("Done");
+            }catch(e){$("phase").textContent=tr("Test failed — check your connection");}
+            btn.disabled=false;btn.textContent=tr("Test again");running=false;
+          }
+
+          /* ---------- wiring ---------- */
+          document.querySelectorAll("#nav button").forEach(b=>b.onclick=()=>tab(b.dataset.t));
+          document.querySelectorAll("#themeSeg button").forEach(b=>b.onclick=()=>{S.theme=b.dataset.th;save();applyTheme();});
+          $("animSw").onclick=()=>{S.anim=!S.anim;save();applyTheme();};
+          $("languageSelect").onchange=()=>{S.lang=$("languageSelect").value;save();applyLanguage();};
+          $("copy4").onclick=()=>copyText(ip4);
+          $("copy6").onclick=()=>copyText(ip6);
+          $("refresh").onclick=load;
+          $("startTest").onclick=runTest;
+          matchMedia("(prefers-color-scheme: light)").addEventListener&&matchMedia("(prefers-color-scheme: light)").addEventListener("change",()=>{if(S.theme==="auto")applyTheme();});
+          initMap("world","worldMap");initMap("city","cityMap");
+          applyTheme();applyLanguage();load();
+          </script></body></html>
+          EOF
+
+      # Download Leaflet (map library) at build time so it is bundled inside the APK
+      - name: Download Leaflet
+        shell: bash
+        run: |
+          A=android/app/src/main/assets
+          curl -fsSL https://unpkg.com/leaflet@1.9.4/dist/leaflet.js -o $A/leaflet.js || curl -fsSL https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.js -o $A/leaflet.js
+          curl -fsSL https://unpkg.com/leaflet@1.9.4/dist/leaflet.css -o $A/leaflet.css || curl -fsSL https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.css -o $A/leaflet.css
+          test -s $A/leaflet.js && test -s $A/leaflet.css
+          curl -fsSL https://raw.githubusercontent.com/nvkelso/natural-earth-vector/master/geojson/ne_110m_admin_0_countries.geojson -o $A/world-countries.geojson || curl -fsSL https://cdn.jsdelivr.net/gh/nvkelso/natural-earth-vector@master/geojson/ne_110m_admin_0_countries.geojson -o $A/world-countries.geojson
+          test -s $A/world-countries.geojson
+          { printf 'window.WORLD_COUNTRIES='; cat $A/world-countries.geojson; printf ';'; } > $A/world-countries.js
+          test -s $A/world-countries.js
+          rm -f $A/world-countries.geojson
+
+      # Pin the build to Java 17; Gradle 8.9 / Android Gradle Plugin 8.7.3
+      # cannot run with the Java 25 runtime that caused the previous failure.
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: "17"
+
+      - name: Build APK
+        uses: gradle/gradle-build-action@v3
+        with:
+          gradle-version: "8.9"
+          build-root-directory: android
+          arguments: assembleDebug
+
+      - name: Upload APK artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Marsh-IP-APK
+          path: android/app/build/outputs/apk/debug/app-debug.apk
+          if-no-files-found: error
